@@ -98,10 +98,71 @@
 整体系统由三部分组成：人脸检测模块、区域划分模块以及自适应压缩模块。
 </p>
 
-<div class="placeholder">
-[此处插入系统整体流程图：Image → HOG → ROI → Compression]
-</div>
+<div style="margin: 2rem 0; background: #f8fafc; padding: 1.5rem; border-radius: 12px;">
+    <p style="text-align: center; font-weight: 600; margin-bottom: 1.5rem; color: #1e293b;">
+         系统整体流程（点击模块查看详情）
+    </p>
 
+    <!-- 1. 最简流程图（点击展开分支） -->
+    <div style="display: flex; flex-direction: column; gap: 0.8rem; max-width: 700px; margin: 0 auto;">
+
+        <!-- 模块1：输入图像（点击无分支，只是一个示意） -->
+        <div style="background: white; padding: 0.8rem 1.2rem; border-radius: 8px; border-left: 4px solid #3b82f6; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <span style="font-weight: 500;"> 输入图像</span>
+        </div>
+
+        <!-- 模块2：HOG人脸检测（可展开） -->
+        <details style="background: white; border-radius: 8px; border-left: 4px solid #8b5cf6; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <summary style="padding: 0.8rem 1.2rem; cursor: pointer; font-weight: 500; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                <span> HOG人脸检测</span>
+                <span style="color: #6b7280; font-size: 0.8rem;">▼ 点击展开</span>
+            </summary>
+            <div style="padding: 0.8rem 1.2rem 1.2rem 1.2rem; border-top: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0 0 8px 8px;">
+                <ul style="margin: 0; padding-left: 1.5rem; color: #374151;">
+                    <li>多尺度图像金字塔（检测不同尺寸人脸）</li>
+                    <li>滑动窗口策略优化（提高检测效率）</li>
+                    <li>非极大值抑制NMS（减少重复检测框）</li>
+                </ul>
+            </div>
+        </details>
+
+        <!-- 模块3：生成掩码（点击展开） -->
+        <details style="background: white; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <summary style="padding: 0.8rem 1.2rem; cursor: pointer; font-weight: 500; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                <span> 生成掩码 (.npy)</span>
+                <span style="color: #6b7280; font-size: 0.8rem;">▼ 点击展开</span>
+            </summary>
+            <div style="padding: 0.8rem 1.2rem 1.2rem 1.2rem; border-top: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0 0 8px 8px;">
+                <ul style="margin: 0; padding-left: 1.5rem; color: #374151;">
+                    <li>基于检测框生成二值掩膜</li>
+                    <li>人脸区域标记为1，背景区域标记为0</li>
+                    <li>掩膜用于后续差异化压缩</li>
+                </ul>
+            </div>
+        </details>
+
+        <!-- 模块4：差异化压缩（核心，点击展开） -->
+        <details style="background: white; border-radius: 8px; border-left: 4px solid #f59e0b; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <summary style="padding: 0.8rem 1.2rem; cursor: pointer; font-weight: 500; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                <span> 差异化压缩</span>
+                <span style="color: #6b7280; font-size: 0.8rem;">▼ 点击展开</span>
+            </summary>
+            <div style="padding: 0.8rem 1.2rem 1.2rem 1.2rem; border-top: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0 0 8px 8px;">
+                <ul style="margin: 0; padding-left: 1.5rem; color: #374151;">
+                    <li><strong>人脸区域：</strong>精细量化表（Q=95）→ 保留细节</li>
+                    <li><strong>背景区域：</strong>粗糙量化表（Q=5）→ 提高压缩率</li>
+                    <li>文件大小一致性控制（与标准JPEG差异≤2%）</li>
+                </ul>
+            </div>
+        </details>
+
+        <!-- 模块5：输出压缩图像（点击无分支） -->
+        <div style="background: white; padding: 0.8rem 1.2rem; border-radius: 8px; border-left: 4px solid #ef4444; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <span style="font-weight: 500;">🖼️ 输出压缩图像</span>
+        </div>
+
+    </div>
+</div>
 <p>
 与传统方法不同，本方法的关键在于利用人脸检测结果指导压缩过程，
 从而在保证压缩率的同时提升视觉质量。
